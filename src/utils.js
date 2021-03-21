@@ -1,3 +1,9 @@
+import { cloneDeep } from 'lodash';
+
+export const MODES = {
+  MANUAL: 'MANUAL',
+  AUTO: 'AUTO',
+};
 export const PLAYER = {
   EKS: {
     name: 'Player 1',
@@ -22,6 +28,43 @@ export const CURRENTMOVE = {
   BALL: 'BALL',
   ADDPLAYER: 'ADDPLAYER',
 };
+
+export const tryToMoveBall = (start, end, data) => {
+  const newData = cloneDeep(data);
+  let isValidMove = true;
+  const xPaces = end.x - start.x;
+  const yPaces = end.y - start.y;
+  const paces = Math.max(Math.abs(xPaces), Math.abs(yPaces));
+  if (paces === 0) return; // no movement
+  let i = 1;
+  let nextX = start.x;
+  let nextY = start.y;
+  let playersJumped = 0;
+
+  if (Math.abs(xPaces) === Math.abs(yPaces) || xPaces === 0 || yPaces === 0) {
+    while (i < paces) {
+      nextX += (xPaces/paces);
+      nextY += (yPaces/paces);
+      const current = newData[nextX][nextY];
+      if (!current.player) { // no player present so cannot jump over
+        isValidMove = false;
+        break;
+      } else {
+        current.player = false; // remove player
+        playersJumped += 1;
+      }
+      i += 1;
+    }
+  } else { // some random movement which is not valid
+    isValidMove = false;
+  }
+
+  return {
+    data: newData,
+    isValidMove,
+    playersJumped,
+  };
+}
 
 export const findAllFutureBallPos = (currentPos, data) => {
   const allDirections = [
@@ -120,8 +163,8 @@ export const findPlayerPos = (data) => {
 export const checkIfCurrentPlayerCanWin = (futurePos, currentPlayer) => {
   const ifWon = {state: false};
   Object.keys(futurePos).forEach(x => {
-    Object.values(x).forEach(v => {
-      if (v.winning && v.winning === currentPlayer) {
+    Object.values(futurePos[x]).forEach(v => {
+      if (v.winning && v.winning.name === currentPlayer.name) {
         ifWon.state = true;
         ifWon.player = currentPlayer;
       }
@@ -131,11 +174,11 @@ export const checkIfCurrentPlayerCanWin = (futurePos, currentPlayer) => {
 }
 
 // TO check if current position is end
-export const checkIfCurrentWinningPos = (currentPlayer, end) => {
+export const checkIfCurrentWinningPos = (end) => {
   let hasWon = {state: false};
-  if (currentPlayer.winningRow === 0 && end.x <= currentPlayer.winningRow) {// check manual movement for own goal
+  if (end.x <= 0) {// check manual movement for own goal
     hasWon = {state: true, player: PLAYER.EKS};
-  } else if (end.x >= currentPlayer.winningRow) {
+  } else if (end.x >= 18) {
     hasWon = {state: true, player: PLAYER.OHS};
   }
   return hasWon;

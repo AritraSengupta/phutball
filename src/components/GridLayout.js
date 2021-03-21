@@ -21,10 +21,10 @@ const styles = {
   }
 };
 const GridLayout = (props) => {
-  const { data, futureBallPos, currentPlayer, currentBoardState, showSuggestion } = props;
+  const { data, futureBallPos, currentPlayer, currentBoardState, showSuggestion, wonPlayer } = props;
   const showModal = {
     state: currentBoardState === BOARDSTATE.WIN,
-    message: `${currentPlayer.name} Won`
+    message: `${wonPlayer && wonPlayer.name} Won`
   }
   const rowNumber = data.length;
   const columnNumber = data[0].length;
@@ -54,6 +54,8 @@ const GridLayout = (props) => {
               onDragEnd={props.onDragEnd}
               onDrop={props.onDrop}
               addPlayer={props.addPlayer}
+              rowMax={data.length}
+              colMax={data[0].length}
             />
           )
         });

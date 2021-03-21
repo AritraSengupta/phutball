@@ -1,7 +1,7 @@
 import React from 'react';
 import Board from './Board.js';
 
-import { PLAYER, BOARDSTATE } from '../utils';
+import { PLAYER, BOARDSTATE, MODES } from '../utils';
 
 const gridSize = [19, 15];
 const ballPosStart = {x: 8, y: 7};
@@ -12,7 +12,7 @@ export default class PhutBall extends React.Component {
     super(props);
 
     this.state = {
-      currentPlayer: PLAYER.OHS,
+      currentPlayer: PLAYER.EKS,
       currentBoardState: BOARDSTATE.PRESTART,
       score: {
         EKS: 0,
@@ -23,7 +23,10 @@ export default class PhutBall extends React.Component {
         gridSize,
         ballPosStart,
         playerPos,
-      }
+      },
+      wonPlayer: null,
+      isManual: true,
+      bot: PLAYER.OHS,
     };
 
     this.switchPlayer = this.switchPlayer.bind(this);
@@ -31,9 +34,15 @@ export default class PhutBall extends React.Component {
     this.addScore = this.addScore.bind(this);
     this.updateMove = this.updateMove.bind(this);
     this.resetBoard = this.resetBoard.bind(this);
+    this.setPlayerWon = this.setPlayerWon.bind(this);
+    this.toggleAuto = this.toggleAuto.bind(this);
   }
 
-  switchPlayer() {
+  switchPlayer(player) {
+    if (player) {
+      this.setState({ currentPlayer: player, currentMove: null });
+      return;
+    }
     let { currentPlayer } = this.state;
     if (currentPlayer === PLAYER.EKS) {
       currentPlayer = PLAYER.OHS;
@@ -60,27 +69,43 @@ export default class PhutBall extends React.Component {
   resetBoard() {
     this.setState({
       currentBoardState: BOARDSTATE.PRESTART,
-      currentPlayer: PLAYER.OHS,
-      boardConfig: {
-        gridSize,
-        ballPosStart,
-        playerPos,
-      },
+      currentPlayer: PLAYER.EKS,
+      wonPlayer: null,
     })
   }
 
+  toggleAuto() {
+    const { isManual } = this.state;
+    this.setState({ isManual: !isManual });
+  }
+
+  setPlayerWon(player) {
+    this.setState({ wonPlayer: player });
+  }
+
   render() {
-    const { currentPlayer, currentBoardState, score, currentMove, boardConfig } = this.state;
+    const {
+      currentPlayer,
+      currentBoardState,
+      score,
+      currentMove,
+      boardConfig,
+      wonPlayer,
+      isManual,
+      bot,
+    } = this.state;
     return (
       <div>
         <div>
           <div>
-            <span style={currentPlayer === PLAYER.EKS.name ? {fontWeight: 700} : null}>{PLAYER.EKS.name}</span>
-            <span>: {score.EKS} </span>
+            <span style={currentPlayer.name === PLAYER.EKS.name ? {fontWeight: 700} : null}>
+              {PLAYER.EKS.name}: {score.EKS}
+            </span>
           </div>
           <div>
-            <span style={currentPlayer === PLAYER.OHS.name ? {fontWeight: 700} : null}>{PLAYER.OHS.name}</span>
-            <span>: {score.OHS} </span>
+            <span style={currentPlayer.name === PLAYER.OHS.name ? {fontWeight: 700} : null}>
+              {PLAYER.OHS.name}: {score.OHS}
+            </span>
           </div>
         </div>
         <div>
@@ -93,14 +118,22 @@ export default class PhutBall extends React.Component {
             switchPlayer={this.switchPlayer}
             addScore={this.addScore}
             updateMove={this.updateMove}
+            setPlayerWon={this.setPlayerWon}
             config={boardConfig}
+            wonPlayer={wonPlayer}
+            isManual={isManual}
+            bot={bot}
           />
         </div>
         <div>{currentBoardState}</div>
         <div>
-          <button onClick={this.switchPlayer}>Give chance to {currentPlayer.name}</button>
+          <button onClick={() => this.switchPlayer()}>
+            Give chance to {currentPlayer.name === PLAYER.EKS.name ? PLAYER.OHS.name : PLAYER.EKS.name}
+          </button>
           {currentBoardState === BOARDSTATE.PRESTART && <button onClick={() => this.changeBoardState(BOARDSTATE.PLAYING)}> Start </button>}
           <button onClick={this.resetBoard}>RESET</button>
+          {currentBoardState === BOARDSTATE.PRESTART 
+            && <button onClick={this.toggleAuto}>{isManual ? 'Auto' : 'Manual'}</button>}
         </div>
       </div>
     )
