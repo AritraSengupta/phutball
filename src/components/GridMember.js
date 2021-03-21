@@ -1,4 +1,5 @@
 import React from 'react';
+import { BOARDSTATE } from '../utils';
 
 const baseStyle = {
   position: 'absolute',
@@ -40,12 +41,13 @@ const styles = {
   },
 }
 
-export default (props) => {
-  const { row, column, type } = props;
+const GridMember = (props) => {
+  const { row, column, type, onDragStart, onDragEnd, currentBoardState } = props;
   if (!type) return null;
   const dragProps = type === 'ball' ? {
-    draggable: true,
-    onDragStart: props.onDragStart,
+    draggable: currentBoardState !== BOARDSTATE.PRESTART,
+    onDragStart,
+    onDragEnd,
   } : {};
   return <div
     style={styles[type]}
@@ -54,3 +56,5 @@ export default (props) => {
     column={column}
   ></div>
 }
+
+export default GridMember;

@@ -3,14 +3,6 @@ import Board from './Board.js';
 
 import { PLAYER, BOARDSTATE } from '../utils';
 
-const styles = {
-  player: {
-    current: {
-      fontWeight: 800,
-    }
-  }
-};
-
 const gridSize = [19, 15];
 const ballPosStart = {x: 8, y: 7};
 const playerPos = [];
@@ -68,6 +60,7 @@ export default class PhutBall extends React.Component {
   resetBoard() {
     this.setState({
       currentBoardState: BOARDSTATE.PRESTART,
+      currentPlayer: PLAYER.OHS,
       boardConfig: {
         gridSize,
         ballPosStart,
@@ -81,10 +74,14 @@ export default class PhutBall extends React.Component {
     return (
       <div>
         <div>
-          <span style={currentPlayer === PLAYER.EKS.name ? {fontWeight: 700} : null}>{PLAYER.EKS.name}</span>
-          <span> {score.EKS} </span>
-          <span style={currentPlayer === PLAYER.OHS.name ? {fontWeight: 700} : null}>{PLAYER.OHS.name}</span>
-          <span> {score.OHS} </span>
+          <div>
+            <span style={currentPlayer === PLAYER.EKS.name ? {fontWeight: 700} : null}>{PLAYER.EKS.name}</span>
+            <span>: {score.EKS} </span>
+          </div>
+          <div>
+            <span style={currentPlayer === PLAYER.OHS.name ? {fontWeight: 700} : null}>{PLAYER.OHS.name}</span>
+            <span>: {score.OHS} </span>
+          </div>
         </div>
         <div>
           <Board
@@ -92,6 +89,7 @@ export default class PhutBall extends React.Component {
             currentBoardState={currentBoardState}
             currentMove={currentMove}
             changeBoardState={this.changeBoardState}
+            resetBoard={this.resetBoard}
             switchPlayer={this.switchPlayer}
             addScore={this.addScore}
             updateMove={this.updateMove}

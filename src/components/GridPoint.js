@@ -35,13 +35,13 @@ const styles = {
   }
 };
 
-function getType(ball, player, ballPosType, currentPlayer, showSuggestion) {
+function getType(ball, player, ballPosType, currentPlayer) {
   let type = undefined;
   if (ball) {
     type = 'ball';
   } else if (player) {
     type = 'player';
-  } else if (ballPosType && showSuggestion) {
+  } else if (ballPosType) {
     if(ballPosType.winning === currentPlayer) {
       type = 'winning';
     } else if (ballPosType.losing === currentPlayer) {
@@ -52,9 +52,9 @@ function getType(ball, player, ballPosType, currentPlayer, showSuggestion) {
   }
   return type;
 }
-export default (props) => {
-  const { row, column, ballPosType, player, ball, currentPlayer, showSuggestion = true } = props;
-  const type = getType(ball, player, ballPosType, currentPlayer, showSuggestion);
+const GridPoint = (props) => {
+  const { row, column, ballPosType, player, ball, currentPlayer, currentBoardState } = props;
+  const type = getType(ball, player, ballPosType, currentPlayer);
 
   return (
     <div
@@ -72,9 +72,13 @@ export default (props) => {
       {type && <GridMember
         type={type}
         onDragStart={props.onDragStart}
+        onDragEnd={props.onDragEnd}
         row={row}
         column={column}
+        currentBoardState={currentBoardState}
       />}
     </div>
   );
 }
+
+export default GridPoint;

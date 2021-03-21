@@ -21,10 +21,12 @@ export default class Board extends React.Component {
     this.state = {
       data: layout,
       futureBallPos: futurePos,
+      showSuggestion: false,
     };
     this.onDragOver = this.onDragOver.bind(this);
     this.onDrop = this.onDrop.bind(this);
     this.onDragStart = this.onDragStart.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
 
     this.moveBall = this.moveBall.bind(this);
     this.addPlayer = this.addPlayer.bind(this);
@@ -36,6 +38,7 @@ export default class Board extends React.Component {
     const column = e.target.getAttribute('column');
     e.dataTransfer.setData('row', row);
     e.dataTransfer.setData('column', column);
+    this.setState({ showSuggestion: true });
   }
 
   onDrop(e, row, column) {
@@ -54,6 +57,10 @@ export default class Board extends React.Component {
 
   onDragOver(e) {
     e.preventDefault();
+  }
+
+  onDragEnd(e) {
+    this.setState({ showSuggestion: false });
   }
 
   addPlayer(row, column) {
@@ -138,22 +145,26 @@ export default class Board extends React.Component {
   }
 
   onWin(player) {
-    const { changeBoardState, addScore } = this.props;
+    const { changeBoardState, addScore, resetBoard } = this.props;
     changeBoardState(BOARDSTATE.WIN);
     addScore(player);
+    setTimeout(() => resetBoard(), 1000);
   }
 
   render() {
-    const { currentPlayer } = this.props;
-    const { data, futureBallPos } = this.state;
+    const { currentPlayer, currentBoardState } = this.props;
+    const { data, futureBallPos, showSuggestion } = this.state;
     return (
       <div>
         <GridLayout
           data={data}
           futureBallPos={futureBallPos}
           currentPlayer={currentPlayer}
+          currentBoardState={currentBoardState}
+          showSuggestion={showSuggestion}
           onDragOver={this.onDragOver}
           onDragStart={this.onDragStart}
+          onDragEnd={this.onDragEnd}
           onDrop={this.onDrop}
           addPlayer={this.addPlayer}
         />

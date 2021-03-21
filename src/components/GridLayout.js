@@ -1,4 +1,5 @@
 import React from 'react';
+import { BOARDSTATE } from '../utils';
 import GridPoint from './GridPoint';
 
 const styles = {
@@ -19,20 +20,30 @@ const styles = {
     })
   }
 };
-export default (props) => {
-  const { data, showModal, futureBallPos, currentPlayer } = props;
+const GridLayout = (props) => {
+  const { data, futureBallPos, currentPlayer, currentBoardState, showSuggestion } = props;
+  const showModal = {
+    state: currentBoardState === BOARDSTATE.WIN,
+    message: `${currentPlayer.name} Won`
+  }
   const rowNumber = data.length;
   const columnNumber = data[0].length;
   return (
     <div style={styles.wrapper(rowNumber, columnNumber)}>
-      {showModal && <div style={styles.modal(rowNumber, columnNumber)}></div>}
+      {showModal.state && <div style={styles.modal(rowNumber, columnNumber)}>
+        {showModal.message}
+      </div>}
       {data.map((row, idx) => {
         return row.map((column, cdx) => {
-          const ballPosType = futureBallPos[idx] &&  futureBallPos[idx][cdx];
+          const ballPosType = currentBoardState !== BOARDSTATE.PRESTART 
+            && showSuggestion 
+            && futureBallPos[idx] 
+            && futureBallPos[idx][cdx];
           return (
             <GridPoint
               key={`${idx}-${cdx}`}
               currentPlayer={currentPlayer}
+              currentBoardState={currentBoardState}
               player={column.player}
               ball={column.ball}
               ballPosType={ballPosType}
@@ -40,6 +51,7 @@ export default (props) => {
               column={cdx}
               onDragOver={props.onDragOver}
               onDragStart={props.onDragStart}
+              onDragEnd={props.onDragEnd}
               onDrop={props.onDrop}
               addPlayer={props.addPlayer}
             />
@@ -49,3 +61,5 @@ export default (props) => {
     </div>
   );
 }
+
+export default GridLayout;

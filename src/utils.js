@@ -67,7 +67,6 @@ export const findAllFutureBallPos = (currentPos, data) => {
       }
     }
   }
-  console.log({ positions, length2: data.length, width: data[0].length} );
   return positions;
 }
 
