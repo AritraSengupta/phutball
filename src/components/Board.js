@@ -27,6 +27,7 @@ export default class Board extends React.Component {
       futureBallPos: futurePos,
       showSuggestion: false,
       loading: false,
+      ballPosStart: props.config.ballPosStart,
     };
     this.updateInProgress = false;
     this.onDragOver = this.onDragOver.bind(this);
@@ -41,15 +42,23 @@ export default class Board extends React.Component {
     this.animateMovement = this.animateMovement.bind(this);
   }
 
-  componentDidUpdate(prevProps) {
+  static getDerivedStateFromProps(props) {
+    const { config: { ballPosStart } } = props;
+    return {
+      ballPosStart,
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
     const { currentPlayer: prevPlayer, currentBoardState: prevBoardState } = prevProps;
     const { currentPlayer, currentBoardState, isManual, bot } = this.props;
-    const { loading } = this.state;
-    const statement = prevPlayer.name !== currentPlayer.name
-      && currentPlayer.name === bot.name
-      && isManual === false
-      && loading === false;
+    const { loading, ballPosStart } = this.state;
+    const { ballPosStart: prevballPosStart } = prevState;
 
+    if (prevballPosStart.x !== ballPosStart.x) { // config changed just update board and reset
+      this.resetBoardState();
+      return;
+    }
     // onWin this is called again especially if player changes
     // therefore to compensate we make sure that if board is prestart don't update score
     if (currentBoardState === BOARDSTATE.PRESTART) {
@@ -76,7 +85,8 @@ export default class Board extends React.Component {
     this.setState({ loading: true });
     const { data } = this.state;
     this.updateInProgress = true;
-    const { currentPlayer, switchPlayer } = this.props;
+    const { currentPlayer, switchPlayer, disableButtons } = this.props;
+    disableButtons(true); // Disable all the control buttons while the movement is occuring
     const currPos = findBallPos(data);
     const paths = findAllAIPaths(currPos, data);
     const {
@@ -98,6 +108,7 @@ export default class Board extends React.Component {
     setTimeout(() => {
       this.updateInProgress = false;
       this.setState({ loading: false });
+      disableButtons(false); // enable buttons
       switchPlayer(PLAYER.EKS); // switch to non bot
     }, 1000);
   }
@@ -145,6 +156,7 @@ export default class Board extends React.Component {
   addPlayer(row, column) {
     const { currentBoardState, switchPlayer, currentMove } = this.props;
     if (currentMove === CURRENTMOVE.BALL) return; // already player has committed to a move
+    if (currentBoardState === BOARDSTATE.PRESTART) return; // game has not started
     const { data } = this.state;
     const current = data[row][column];
     const { player, ball } = current;
@@ -154,9 +166,8 @@ export default class Board extends React.Component {
     const futureBallPos = findAllFutureBallPos(findBallPos(data), data);
     this.setState({ data, futureBallPos });
 
-    if (currentBoardState !== BOARDSTATE.PRESTART) {
-      switchPlayer();
-    }
+    switchPlayer();
+
   }
 
   moveBall(start, end) {
@@ -216,7 +227,7 @@ export default class Board extends React.Component {
 
   render() {
     const { currentPlayer, currentBoardState, wonPlayer } = this.props;
-    const { data, futureBallPos, showSuggestion } = this.state;
+    const { data, futureBallPos, showSuggestion, loading } = this.state;
     return (
       <div>
         <GridLayout
@@ -231,8 +242,8 @@ export default class Board extends React.Component {
           onDrop={this.onDrop}
           addPlayer={this.addPlayer}
           wonPlayer={wonPlayer}
+          loading={loading}
         />
-        <button onClick={this.calculateAIPaths}>Calculate AI Paths</button>
       </div>
     );
   }

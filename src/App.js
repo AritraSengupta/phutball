@@ -1,4 +1,5 @@
 import PhutBall from './components/PhutBall';
+import './App.css';
 
 function App() {
   return (

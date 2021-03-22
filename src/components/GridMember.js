@@ -15,42 +15,44 @@ const styles = {
   },
   ball: {
     ...baseStyle,
-    width: '9px',
-    height: '9px',
-    background: '#fff000',
-    cursor: 'pointer',
+    width: '11px',
+    height: '11px',
+    background: '#F1C40F',
+    cursor: 'not-allowed',
   },
   winning: {
     ...baseStyle,
     borderStyle: 'dotted',
-    borderColor: '#808000	',
-    background: 'none',
+    borderColor: 'rgb(0, 200, 0)',
+    background: 'rgb(0, 200, 0, 0.6)',
   },
   losing: {
     ...baseStyle,
     borderStyle: 'dotted',
-    borderColor: 'red',
-    background: 'none',
+    borderColor: 'rgb(203, 67, 53)',
+    background: 'rgb(203, 67, 53, 0.6)',
 
   },
   validMove: {
     ...baseStyle,
     borderStyle: 'dotted',
-    borderColor: 'blue',
-    background: 'none',
+    borderColor: '#3498DB',
+    background: 'rgb(52, 152, 219, 0.6)',
   },
 }
 
 const GridMember = (props) => {
   const { row, column, type, onDragStart, onDragEnd, currentBoardState } = props;
   if (!type) return null;
+  const draggable = currentBoardState !== BOARDSTATE.PRESTART;
   const dragProps = type === 'ball' ? {
-    draggable: currentBoardState !== BOARDSTATE.PRESTART,
+    draggable,
     onDragStart,
     onDragEnd,
   } : {};
+  const style = {...styles[type], ...(draggable && type === 'ball' && { cursor: 'grabbing' })}
   return <div
-    style={styles[type]}
+    style={style}
     {...dragProps}
     row={row}
     column={column}

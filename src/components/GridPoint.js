@@ -11,7 +11,7 @@ const styles = {
   entity: {
     width: '10px',
     height: '10px',
-    background: '#808000',
+    background: '#196F3D',
     boxSizing: 'border-box',
   },
   tl: (row, column) => ({

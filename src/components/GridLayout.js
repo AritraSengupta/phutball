@@ -17,21 +17,42 @@ const styles = {
       height: `${rows*20}px`,
       width: `${columns*20}px`,
       background: 'rgb(255, 255, 244, 0.6)',
+      textAlign: 'center',
+      fontWeight: 600,
+      fontSize: '27px',
     })
   }
 };
-const GridLayout = (props) => {
-  const { data, futureBallPos, currentPlayer, currentBoardState, showSuggestion, wonPlayer } = props;
-  const showModal = {
+
+const modalsMessages = (wonPlayer, loading, currentBoardState) => ({
+  WIN: {
     state: currentBoardState === BOARDSTATE.WIN,
     message: `${wonPlayer && wonPlayer.name} Won`
-  }
+  },
+  LOADING: {
+    state: loading,
+    message: `Loading Please Wait`
+  },
+  HIDE: {
+    state: false,
+  },
+});
+
+const getKey = (currentBoardState, loading) => {
+  if (currentBoardState === BOARDSTATE.WIN) return 'WIN';
+  if (loading) return 'LOADING';
+  return 'HIDE';
+
+}
+const GridLayout = (props) => {
+  const { data, futureBallPos, currentPlayer, currentBoardState, showSuggestion, wonPlayer, loading } = props;
+  const showModal = modalsMessages(wonPlayer, loading, currentBoardState)[getKey(currentBoardState, loading)];
   const rowNumber = data.length;
   const columnNumber = data[0].length;
   return (
     <div style={styles.wrapper(rowNumber, columnNumber)}>
       {showModal.state && <div style={styles.modal(rowNumber, columnNumber)}>
-        {showModal.message}
+        <div style={{ marginTop: '150px' }}>{showModal.message}</div>
       </div>}
       {data.map((row, idx) => {
         return row.map((column, cdx) => {
