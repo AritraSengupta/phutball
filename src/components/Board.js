@@ -55,7 +55,8 @@ export default class Board extends React.Component {
     const { loading, ballPosStart } = this.state;
     const { ballPosStart: prevballPosStart } = prevState;
 
-    if (prevballPosStart.x !== ballPosStart.x) { // config changed just update board and reset
+    if (prevballPosStart.x !== ballPosStart.x
+      || (prevBoardState !== currentBoardState && currentBoardState === BOARDSTATE.PRESTART)) { // config changed just update board and reset
       this.resetBoardState();
       return;
     }
