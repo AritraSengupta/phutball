@@ -41,7 +41,8 @@ export default class PhutBall extends React.Component {
       handicap: {
         name: PLAYER.EKS.name,
         value: 0,
-      }
+      },
+      showRules: false,
     };
 
     this.switchPlayer = this.switchPlayer.bind(this);
@@ -54,6 +55,12 @@ export default class PhutBall extends React.Component {
     this.disableButtonsToggle = this.disableButtonsToggle.bind(this);
     this.handleHandicapNameChange = this.handleHandicapNameChange.bind(this);
     this.handleandicapValueChange = this.handleandicapValueChange.bind(this);
+    this.toggleRules = this.toggleRules.bind(this);
+  }
+
+  toggleRules() {
+    const { showRules } = this.state;
+    this.setState({ showRules: !showRules });
   }
   handleHandicapNameChange(e) {
     const value = e.target.value;
@@ -152,12 +159,39 @@ export default class PhutBall extends React.Component {
       bot,
       buttonDisabled,
       handicap,
+      showRules,
     } = this.state;
 
     return (
       <div style={ {display: 'flex', alignContent: 'center', alignItems: 'center', flexFlow: 'column'}  }>
+        {showRules && <div style={{
+          position: 'absolute',
+          border: '1px solid black',
+          width: '300px',
+          right: '10px',
+          top: '70px',
+          fontSize: '12px',
+          animation: 'all 1.5s'
+        }}>
+          <span style={{ fontSize: '15px', fontWeight: 500 }}>Controls:</span>
+          <ul>
+            <li>Single click on an empty grid to create a player (1 turn)</li>
+            <li>Drag the ball (yellow dot) to a free grid provided there are players to jump over</li>
+            <li>In one turn multiple jumps can be perfomed provided they are legal. Jumps are optional and can be stopped at any time.</li>
+            <li>Goal is to drag the ball to the opponents goal</li>
+          </ul>
+
+          <span style={{ fontSize: '15px', fontWeight: 500 }}>UI:</span>
+          <ul>
+            <li>Ball: yellow, players: black and transparent circles to show possible ball position in the next move</li>
+            <li>Drag the ball and it will show the possible positions</li>
+            <li>Blue: neutral position, green: winning position, red: own goal(losing position)</li>
+            <li>The game will calculate if the player has already just before the final move and need not be perfomed manually</li>
+          </ul>
+        </div>}
         <div style={{flex: 1, width: '90%', borderBottom: '2px solid black', marginBottom: '10px'}}>
-          <h1 style={{ margin: '10px' }}>PhutBall</h1>
+          <h1 style={{ margin: 0 }}>PhutBall</h1>
+          <span style={{float: 'right', cursor: 'pointer'}} onClick={this.toggleRules}> Rules </span>
         </div>
         <div style={styles.goal}>{PLAYER.OHS.name} Goal</div>
         <div style={{flex: 1}}>

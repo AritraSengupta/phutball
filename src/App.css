@@ -42,3 +42,8 @@ button:hover span:after {
   opacity: 1;
   right: 0;
 }
+ul {
+  text-align: justify;
+  padding-right: 8px;
+  margin-left: -20px;
+}
