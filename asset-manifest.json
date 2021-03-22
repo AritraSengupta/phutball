@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/phutball/static/css/main.545c04cd.chunk.css",
+    "main.js": "/phutball/static/js/main.a41a2aff.chunk.js",
+    "main.js.map": "/phutball/static/js/main.a41a2aff.chunk.js.map",
+    "runtime-main.js": "/phutball/static/js/runtime-main.016c961d.js",
+    "runtime-main.js.map": "/phutball/static/js/runtime-main.016c961d.js.map",
+    "static/js/2.a6b0e98c.chunk.js": "/phutball/static/js/2.a6b0e98c.chunk.js",
+    "static/js/2.a6b0e98c.chunk.js.map": "/phutball/static/js/2.a6b0e98c.chunk.js.map",
+    "static/js/3.71885e55.chunk.js": "/phutball/static/js/3.71885e55.chunk.js",
+    "static/js/3.71885e55.chunk.js.map": "/phutball/static/js/3.71885e55.chunk.js.map",
+    "index.html": "/phutball/index.html",
+    "static/css/main.545c04cd.chunk.css.map": "/phutball/static/css/main.545c04cd.chunk.css.map",
+    "static/js/2.a6b0e98c.chunk.js.LICENSE.txt": "/phutball/static/js/2.a6b0e98c.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.016c961d.js",
+    "static/js/2.a6b0e98c.chunk.js",
+    "static/css/main.545c04cd.chunk.css",
+    "static/js/main.a41a2aff.chunk.js"
+  ]
+}
