@@ -223,7 +223,8 @@ export default class Board extends React.Component {
   resetBoardState() {
     const { config: { gridSize, ballPosStart, playerPos } } = this.props;
     const layout = getLayout(gridSize, `${ballPosStart.x}-${ballPosStart.y}`, playerPos);
-    this.setState({ data: layout });
+    const futureBallPos = findAllFutureBallPos(ballPosStart, layout);
+    this.setState({ data: layout, futureBallPos });
   }
 
   render() {

@@ -47,3 +47,25 @@ ul {
   padding-right: 8px;
   margin-left: -20px;
 }
+
+.rules-box {
+  position: absolute;
+  border: 1px solid rgb(140, 140, 140, 0.9);
+  border-radius: 2px;
+  box-shadow: 2px 3px 4px rgb(200, 200, 200, 0.5);
+  width: 300px;
+  right: 10px;
+  top: 70px;
+  font-size: 12px;
+  padding: 4px;
+}
+
+.box-show {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.box-hide {
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
